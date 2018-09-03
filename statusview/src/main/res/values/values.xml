@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <attr name="steps" format="integer" />
+  <attr name="stroke_width" format="dimension"/>
+  <attr name="radius" format="dimension" />
+  <declare-styleable name="StatusView">
+    <attr name="steps" />
+    <attr name="stoke_width" />
+    <attr name="radius" />
+  </declare-styleable>
+</resources>
