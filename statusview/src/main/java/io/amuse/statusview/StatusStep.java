@@ -1,6 +1,6 @@
 package io.amuse.statusview;
 
-class StatusStep {
+public class StatusStep {
   private int colorCircle;
   private int colorLine;
 
