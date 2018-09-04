@@ -25,7 +25,7 @@ public class StatusView extends View {
   private Paint paint;
   private List<StatusStep> statusSteps = new ArrayList<>();
 
-  private float stroke_width;
+  private float strokeWidth;
   private int radius;
 
   public StatusView(Context context) {
@@ -51,7 +51,7 @@ public class StatusView extends View {
         0, 0);
 
     try {
-      stroke_width = a.getDimensionPixelOffset(R.styleable.StatusView_stoke_width, 15);
+      strokeWidth = a.getDimensionPixelOffset(R.styleable.StatusView_stoke_width, 15);
       radius = a.getDimensionPixelOffset(R.styleable.StatusView_radius, 30);
     } finally {
       a.recycle();
@@ -74,12 +74,7 @@ public class StatusView extends View {
 
   @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-    paintSteps(canvas, radius, stroke_width, statusSteps);
-  }
-
-  public void setStatusSteps(List<StatusStep> statusSteps) {
-    this.statusSteps = statusSteps;
-    invalidate();
+    paintSteps(canvas, radius, strokeWidth, statusSteps);
   }
 
   private void paintSteps(Canvas canvas, float radius, float strokeWidth, @NonNull List<StatusStep> steps){
@@ -119,10 +114,26 @@ public class StatusView extends View {
   }
 
   ///////////////////////////////////////////////////////////////////////////
+  // Setters
+  ///////////////////////////////////////////////////////////////////////////
+
+  public void setSteps(List<StatusStep> statusSteps) {
+    this.statusSteps = statusSteps;
+  }
+
+  public void setStrokeWidth(float strokeWidth) {
+    this.strokeWidth = strokeWidth;
+  }
+
+  public void setRadius(int radius) {
+    this.radius = radius;
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
   // Helpers
   ///////////////////////////////////////////////////////////////////////////
 
-  public void redrawSteps(){
+  public void redrawRandomSteps(){
     generateRandomSteps();
     invalidate();
   }
