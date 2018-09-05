@@ -12,6 +12,7 @@
       app:stoke_width="8dp"
       app:radius="12dp"
       app:extra_padding="2dp"
+      app:text_bottom_margin="15dp"
       android:id="@+id/statusView"
       android:layout_width="0dp"
       android:layout_height="100dp"

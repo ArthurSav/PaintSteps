@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,8 @@ public class StatusView extends View {
   private Rect textBounds;
 
   private Paint paint;
+  private Typeface typeface;
+
   private List<StatusStep> statusSteps = new ArrayList<>();
 
   private float strokeWidth;
@@ -34,6 +37,7 @@ public class StatusView extends View {
   private int textSize;
   private int extraPadding;
   private int textBottomMargin;
+  private int textColor;
 
   public StatusView(Context context) {
     super(context);
@@ -60,10 +64,10 @@ public class StatusView extends View {
       textSize = a.getDimensionPixelSize(R.styleable.StatusView_text_size, 30);
       extraPadding = a.getDimensionPixelOffset(R.styleable.StatusView_extra_padding, 0);
       textBottomMargin = a.getDimensionPixelOffset(R.styleable.StatusView_text_bottom_margin, 50);
+      textColor = a.getColor(R.styleable.StatusView_text_color, Color.BLACK);
     } finally {
       a.recycle();
     }
-    generateRandomSteps();
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -109,6 +113,11 @@ public class StatusView extends View {
     float x_step = x / step_lines;
     float progressWidth = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
 
+    // custom text typeface
+    if (typeface != null) {
+      paint.setTypeface(typeface);
+    }
+
     for (int i = 0; i < steps_count; i++) {
       StatusStep step = steps.get(i);
 
@@ -135,12 +144,12 @@ public class StatusView extends View {
       // draw text
       String txt = steps.get(i).getText();
       if (txt != null) {
-        paint.setColor(Color.BLACK);
+        paint.setColor(textColor);
         paint.setTextSize(textSize);
         paint.getTextBounds(txt, 0, txt.length(), textBounds);
 
         float textStartX = startFrom - (textBounds.width() / 2);
-        float textStartY = y - textBottomMargin;
+        float textStartY = y - radius - textBottomMargin;
 
         canvas.drawText(txt, textStartX, textStartY, paint);
       }
@@ -171,6 +180,10 @@ public class StatusView extends View {
     this.extraPadding = getResources().getDimensionPixelOffset(extraPadding);
   }
 
+  public void setTypeface(Typeface typeface) {
+    this.typeface = typeface;
+  }
+
   ///////////////////////////////////////////////////////////////////////////
   // Helpers
   ///////////////////////////////////////////////////////////////////////////
@@ -182,7 +195,7 @@ public class StatusView extends View {
 
   private void generateRandomSteps() {
     Random rnd = new Random();
-    int step_count = rnd.nextInt(4);
+    int step_count = rnd.nextInt(4) + 1;
 
     statusSteps = new ArrayList<>();
     for (int i = 0; i < step_count; i++) {
