@@ -2,8 +2,14 @@
 <resources>
   <attr name="stroke_width" format="dimension"/>
   <attr name="radius" format="dimension" />
+  <attr name="text_size" format="dimension" />
+  <attr name="extra_padding"  format="dimension" />
+  <attr name="text_bottom_margin" format="dimension" />
   <declare-styleable name="StatusView">
     <attr name="stoke_width" />
     <attr name="radius" />
+    <attr name="text_size" />
+    <attr name="extra_padding" />
+    <attr name="text_bottom_margin"/>
   </declare-styleable>
 </resources>

@@ -11,9 +11,10 @@
   <io.amuse.statusview.StatusView
       app:stoke_width="8dp"
       app:radius="12dp"
+      app:extra_padding="2dp"
       android:id="@+id/statusView"
       android:layout_width="0dp"
-      android:layout_height="53dp"
+      android:layout_height="100dp"
       android:layout_marginEnd="50dp"
       android:layout_marginLeft="8dp"
       android:layout_marginRight="50dp"

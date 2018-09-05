@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import io.amuse.statusview.StatusView;
-import io.amuse.statusview_app.R;
 
 public class MainActivity extends AppCompatActivity {
 
