@@ -183,28 +183,4 @@ public class StatusView extends View {
   public void setTypeface(Typeface typeface) {
     this.typeface = typeface;
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // Helpers
-  ///////////////////////////////////////////////////////////////////////////
-
-  public void redrawRandomSteps() {
-    generateRandomSteps();
-    invalidate();
-  }
-
-  private void generateRandomSteps() {
-    Random rnd = new Random();
-    int step_count = rnd.nextInt(4) + 1;
-
-    statusSteps = new ArrayList<>();
-    for (int i = 0; i < step_count; i++) {
-      statusSteps.add(new StatusStep(Color.GREEN, getRandomColor(), "Title IS " + i));
-    }
-  }
-
-  private int getRandomColor() {
-    Random rnd = new Random();
-    return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-  }
 }
