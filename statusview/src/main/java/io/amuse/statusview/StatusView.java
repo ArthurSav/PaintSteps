@@ -89,7 +89,7 @@ public class StatusView extends View {
     // configure text bounds
     float textWidth = 0;
     String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
-    String text2 = steps.size() - 1 > 0 ? steps.get(0).getText() : null;
+    String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
     paint.setTextSize(textSize);
     if (text1 != null) {
       paint.getTextBounds(text1, 0, text1.length(), textBounds);
