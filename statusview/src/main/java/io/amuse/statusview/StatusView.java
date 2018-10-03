@@ -135,28 +135,30 @@ public class StatusView extends View {
     }
 
     // draw shadows
-    float progressWidthShadow = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
-    for (int i = 0; i < steps_count; i++) {
+    if (showShadow) {
+      float progressWidthShadow = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
+      for (int i = 0; i < steps_count; i++) {
 
-      float startFrom = progressWidthShadow;
-      progressWidthShadow += x_step;
+        float startFrom = progressWidthShadow;
+        progressWidthShadow += x_step;
 
-      paint.setStyle(Paint.Style.FILL_AND_STROKE);
-      paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-      paint.setColor(shadowColor);
-      paint.setStrokeWidth(shadowWidth);
-      paint.setAlpha(shadowAlpha);
-      canvas.drawCircle(startFrom, y, radius, paint);
-
-      if (i <= step_lines) {
-
-        //draw shadow line
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-        paint.setStrokeWidth(strokeWidth + shadowWidth);
         paint.setColor(shadowColor);
+        paint.setStrokeWidth(shadowWidth);
         paint.setAlpha(shadowAlpha);
-        canvas.drawLine(startFrom, y, progressWidth, y, paint);
+        canvas.drawCircle(startFrom, y, radius, paint);
+
+        if (i <= step_lines) {
+
+          //draw shadow line
+          paint.setStyle(Paint.Style.STROKE);
+          paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+          paint.setStrokeWidth(strokeWidth + shadowWidth);
+          paint.setColor(shadowColor);
+          paint.setAlpha(shadowAlpha);
+          canvas.drawLine(startFrom, y, progressWidth, y, paint);
+        }
       }
     }
 
