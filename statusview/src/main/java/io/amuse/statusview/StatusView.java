@@ -101,6 +101,8 @@ public class StatusView extends View {
 
   private void paintSteps(Canvas canvas, float radius, float strokeWidth, @NonNull List<StatusStep> steps) {
 
+    float shadowRadius = showShadow? radius + shadowWidth: radius;
+
     // configure text bounds
     float textWidth = 0;
     String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
@@ -116,7 +118,7 @@ public class StatusView extends View {
       if (textBounds.width() > textWidth) textWidth = textBounds.width();
     }
 
-    float sideMarginWidth = (textWidth / 2) > radius? textWidth: radius * 2;
+    float sideMarginWidth = (textWidth / 2) > shadowRadius? textWidth: shadowRadius * 2;
     float paddingWidth = extraPadding * 2;
 
     int steps_count = steps.size();
