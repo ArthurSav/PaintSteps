@@ -9,6 +9,8 @@
     >
 
   <io.amuse.statusview.StatusView
+      app:shadow_alpha="0.92"
+      app:shadow_width="11dp"
       app:stoke_width="8dp"
       app:radius="12dp"
       app:extra_padding="2dp"

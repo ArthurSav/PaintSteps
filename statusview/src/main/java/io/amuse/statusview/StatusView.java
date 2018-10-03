@@ -2,6 +2,7 @@ package io.amuse.statusview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,6 +15,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -38,6 +42,11 @@ public class StatusView extends View {
   private int extraPadding;
   private int textBottomMargin;
   private int textColor;
+
+  private int shadowAlpha;
+  private boolean showShadow;
+  private int shadowColor;
+  private int shadowWidth;
 
   public StatusView(Context context) {
     super(context);
@@ -65,9 +74,15 @@ public class StatusView extends View {
       extraPadding = a.getDimensionPixelOffset(R.styleable.StatusView_extra_padding, 0);
       textBottomMargin = a.getDimensionPixelOffset(R.styleable.StatusView_text_bottom_margin, 50);
       textColor = a.getColor(R.styleable.StatusView_text_color, Color.BLACK);
+
+      shadowAlpha = (int) ( 100 * a.getFloat(R.styleable.StatusView_shadow_alpha, 1f));
+      showShadow = a.getBoolean(R.styleable.StatusView_show_shadow, true);
+      shadowColor = a.getColor(R.styleable.StatusView_shadow_color, Color.LTGRAY);
+      shadowWidth = a.getDimensionPixelOffset(R.styleable.StatusView_shadow_width, 25);
     } finally {
       a.recycle();
     }
+    setLayerType(View.LAYER_TYPE_SOFTWARE,null);
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -91,6 +106,7 @@ public class StatusView extends View {
     String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
     String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
     paint.setTextSize(textSize);
+
     if (text1 != null) {
       paint.getTextBounds(text1, 0, text1.length(), textBounds);
       textWidth = textBounds.width();
@@ -118,6 +134,32 @@ public class StatusView extends View {
       paint.setTypeface(typeface);
     }
 
+    // draw shadows
+    float progressWidthShadow = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
+    for (int i = 0; i < steps_count; i++) {
+
+      float startFrom = progressWidthShadow;
+      progressWidthShadow += x_step;
+
+      paint.setStyle(Paint.Style.FILL_AND_STROKE);
+      paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+      paint.setColor(shadowColor);
+      paint.setStrokeWidth(shadowWidth);
+      paint.setAlpha(shadowAlpha);
+      canvas.drawCircle(startFrom, y, radius, paint);
+
+      if (i <= step_lines) {
+
+        //draw shadow line
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+        paint.setStrokeWidth(strokeWidth + shadowWidth);
+        paint.setColor(shadowColor);
+        paint.setAlpha(shadowAlpha);
+        canvas.drawLine(startFrom, y, progressWidth, y, paint);
+      }
+    }
+
     for (int i = 0; i < steps_count; i++) {
       StatusStep step = steps.get(i);
 
@@ -125,12 +167,10 @@ public class StatusView extends View {
       progressWidth += x_step;
 
       if (i < step_lines) {
-
-        // draw colored line
         paint.setColor(step.getColorLine());
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(strokeWidth);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
         canvas.drawLine(startFrom, y, progressWidth, y, paint);
       }
 
@@ -138,8 +178,9 @@ public class StatusView extends View {
       paint.setColor(step.getColorCircle());
       paint.setStyle(Paint.Style.FILL_AND_STROKE);
       paint.setStrokeWidth(0);
-      paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+      paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
       canvas.drawCircle(startFrom, y, radius, paint);
+
 
       // draw text
       String txt = steps.get(i).getText();
@@ -182,5 +223,21 @@ public class StatusView extends View {
 
   public void setTypeface(Typeface typeface) {
     this.typeface = typeface;
+  }
+
+  public void setShadowAlpha(int shadowAlpha) {
+    this.shadowAlpha = shadowAlpha;
+  }
+
+  public void setShowShadow(boolean showShadow) {
+    this.showShadow = showShadow;
+  }
+
+  public void setShadowColor(int shadowColor) {
+    this.shadowColor = shadowColor;
+  }
+
+  public void setShadowWidth(int shadowWidth) {
+    this.shadowWidth = shadowWidth;
   }
 }
