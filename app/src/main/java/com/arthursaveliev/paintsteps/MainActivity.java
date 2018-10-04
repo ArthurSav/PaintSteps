@@ -35,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
   // Helpers
   ///////////////////////////////////////////////////////////////////////////
 
+  private boolean isTextVisible;
+
   public void redrawRandomSteps() {
 
     Random rnd = new Random();
-    int step_count = rnd.nextInt(4) + 1;
+    int step_count = rnd.nextInt(5) + 2;
 
     statusSteps = new ArrayList<>();
     for (int i = 0; i < step_count; i++) {
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     statusView.setSteps(statusSteps);
+    statusView.requestLayout();
     statusView.invalidate();
   }
 

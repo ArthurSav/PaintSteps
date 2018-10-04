@@ -9,12 +9,6 @@
     >
 
   <io.amuse.statusview.StatusView
-      app:shadow_alpha="0.92"
-      app:shadow_width="11dp"
-      app:stoke_width="8dp"
-      app:radius="12dp"
-      app:extra_padding="2dp"
-      app:text_bottom_margin="15dp"
       android:id="@+id/statusView"
       android:layout_width="0dp"
       android:layout_height="100dp"
@@ -26,6 +20,12 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:radius="12dp"
+      app:shadow_alpha="0.8"
+      app:extra_padding="10dp"
+      app:shadow_width="11dp"
+      app:stoke_width="8dp"
+      app:text_bottom_margin="15dp"
       />
   <Button
       android:id="@+id/button"
