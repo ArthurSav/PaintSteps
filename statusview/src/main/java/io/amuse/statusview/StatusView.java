@@ -44,7 +44,7 @@ public class StatusView extends View {
 
   private float strokeWidth;
   private int radius;
-  private int textSize;
+  private float textSize;
   private int extraPadding;
   private int textBottomMargin;
   private int textColor;
@@ -55,6 +55,11 @@ public class StatusView extends View {
   private int shadowWidth;
   private Bitmap mBitmap;
   private Canvas mCanvas;
+
+  private int firstWidth;
+  private int firstHeight;
+  public static final int MIN_WIDTH_ANIM_RESIZE = 500; // min change in width before resizing text
+  private boolean textScaleAutomatically; // if true, it will scale text down when downsizing during animations
 
   public StatusView(Context context) {
     super(context);
@@ -98,6 +103,7 @@ public class StatusView extends View {
       showShadow = a.getBoolean(R.styleable.StatusView_show_shadow, true);
       shadowColor = a.getColor(R.styleable.StatusView_shadow_color, Color.LTGRAY);
       shadowWidth = a.getDimensionPixelOffset(R.styleable.StatusView_shadow_width, 25);
+      textScaleAutomatically = a.getBoolean(R.styleable.StatusView_text_scale_automatically, true);
     } finally {
       a.recycle();
     }
@@ -132,13 +138,34 @@ public class StatusView extends View {
 
   private void paintSteps(Canvas canvas, float radius, float strokeWidth, @NonNull List<StatusStep> steps) {
 
+    int width = getWidth();
+    int height = getHeight();
+
+    if (firstWidth == 0) {
+      firstWidth = width;
+    }
+    if (firstHeight == 0) {
+      firstHeight = height;
+    }
+
     float shadowRadius = showShadow ? radius + shadowWidth : radius;
+
+    String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
+    String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
 
     // configure text bounds
     float textWidth = 0;
-    String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
-    String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
-    paintText.setTextSize(textSize);
+    float updatedTextSize = textSize;
+
+    // When the view is scaling down the text will scale down as well. Used for scene transitions in material design
+    if (textScaleAutomatically) {
+      if (width < firstWidth && width <= MIN_WIDTH_ANIM_RESIZE) {
+        updatedTextSize = (width * textSize) / firstWidth;
+        if (updatedTextSize < 5) updatedTextSize = 0;
+      }
+      else updatedTextSize = textSize;
+    }
+    paintText.setTextSize(updatedTextSize);
 
     if (text1 != null) {
       paintText.getTextBounds(text1, 0, text1.length(), textBounds);
@@ -158,8 +185,8 @@ public class StatusView extends View {
     int step_lines = steps_count - 1;
 
     // margin based on circle radius
-    float x =  getWidth() - sideMarginWidth - paddingWidth;
-    int y =  getHeight() / 2;
+    float x =  width - sideMarginWidth - paddingWidth;
+    int y =  height / 2;
 
     float x_step = x / step_lines;
     float progressWidth = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
@@ -218,7 +245,6 @@ public class StatusView extends View {
       String txt = steps.get(i).getText();
       if (txt != null) {
         paintText.setColor(textColor);
-        paintText.setTextSize(textSize);
         paintText.getTextBounds(txt, 0, txt.length(), textBounds);
 
         float textStartX = startFrom - (textBounds.width() / 2);
