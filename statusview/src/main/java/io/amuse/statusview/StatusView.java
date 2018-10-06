@@ -5,19 +5,15 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +54,7 @@ public class StatusView extends View {
 
   private int firstWidth;
   private int firstHeight;
-  public static final int MIN_WIDTH_ANIM_RESIZE = 500; // min change in width before resizing text
+  public int textScaleMinWidth; // min change in width before resizing text
   private boolean textScaleAutomatically; // if true, it will scale text down when downsizing during animations
 
   public StatusView(Context context) {
@@ -98,12 +94,12 @@ public class StatusView extends View {
       extraPadding = a.getDimensionPixelOffset(R.styleable.StatusView_extra_padding, 0);
       textBottomMargin = a.getDimensionPixelOffset(R.styleable.StatusView_text_bottom_margin, 50);
       textColor = a.getColor(R.styleable.StatusView_text_color, Color.BLACK);
+      textScaleAutomatically = a.getBoolean(R.styleable.StatusView_text_scale_automatically, true);
 
       shadowAlpha = (int) (100 * a.getFloat(R.styleable.StatusView_shadow_alpha, 1f));
       showShadow = a.getBoolean(R.styleable.StatusView_show_shadow, true);
       shadowColor = a.getColor(R.styleable.StatusView_shadow_color, Color.LTGRAY);
       shadowWidth = a.getDimensionPixelOffset(R.styleable.StatusView_shadow_width, 25);
-      textScaleAutomatically = a.getBoolean(R.styleable.StatusView_text_scale_automatically, true);
     } finally {
       a.recycle();
     }
@@ -159,7 +155,8 @@ public class StatusView extends View {
 
     // When the view is scaling down the text will scale down as well. Used for scene transitions in material design
     if (textScaleAutomatically) {
-      if (width < firstWidth && width <= MIN_WIDTH_ANIM_RESIZE) {
+      textScaleMinWidth = (firstWidth / 4) * 3;
+      if (width < textScaleMinWidth) {
         updatedTextSize = (width * textSize) / firstWidth;
         if (updatedTextSize < 5) updatedTextSize = 0;
       }

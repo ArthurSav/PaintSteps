@@ -19,6 +19,7 @@
     <attr name="text_bottom_margin"/>
     <attr name="text_color" />
     <attr name="text_scale_automatically"/>
+    <attr name="text_scale_min_width" />
 
     <attr name="shadow_alpha" />
     <attr name="show_shadow" />
