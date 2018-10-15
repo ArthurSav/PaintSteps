@@ -60,6 +60,8 @@ public class StatusView extends View {
   private boolean showText;
   private int circleDistance;
 
+  private List<GradientDrawable> gradientDrawables;
+
   public StatusView(Context context) {
     super(context);
     init(context, null, 0);
@@ -115,7 +117,17 @@ public class StatusView extends View {
 
   @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
-    createBitmap(w, h);
+    //createBitmap(w, h);
+  }
+
+  @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    super.onLayout(changed, left, top, right, bottom);
+  }
+
+  @Override protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    paintSteps(canvas, radius, strokeWidth, statusSteps);
+    //canvas.drawBitmap(mBitmap, 0, 0, bitmapPaint);
   }
 
   private void createBitmap(int w, int h){
@@ -124,11 +136,6 @@ public class StatusView extends View {
     if (statusSteps != null) {
       paintSteps(mCanvas, radius, strokeWidth, statusSteps);
     }
-  }
-
-  @Override protected void onDraw(Canvas canvas) {
-    super.onDraw(canvas);
-    canvas.drawBitmap(mBitmap, 0, 0, bitmapPaint);
   }
 
   private void paintSteps(Canvas canvas, float radius, float strokeWidth, @NonNull List<StatusStep> steps) {
@@ -202,10 +209,8 @@ public class StatusView extends View {
       if (showLines) {
         if (i < step_lines) {
           if (step.isUseGradient()) {
-            int color1 = step.getColorCircle();
-            int color2 = steps.get(i+1).getColorCircle();
             int yWidth = (int) (strokeWidth / 2);
-            GradientDrawable gradientLine = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,  new int[]{color1, color2});
+            GradientDrawable gradientLine = gradientDrawables.get(i);
             gradientLine.setBounds((int) startFrom, y - yWidth, (int) progressWidth, y + yWidth);
             gradientLine.setShape(GradientDrawable.RECTANGLE);
             gradientLine.draw(canvas);
@@ -247,6 +252,22 @@ public class StatusView extends View {
 
   public void setSteps(List<StatusStep> statusSteps) {
     this.statusSteps = statusSteps;
+
+    if (statusSteps == null) return;
+    if (gradientDrawables == null) gradientDrawables = new ArrayList<>();
+    gradientDrawables.clear();
+
+    int size = statusSteps.size();
+    int step_lines = size - 1;
+    for (int i = 0; i < size; i++) {
+      StatusStep step = statusSteps.get(i);
+      if (i < step_lines) {
+        int color1 = step.getColorCircle();
+        int color2 = statusSteps.get(i + 1).getColorCircle();
+        GradientDrawable gradientLine = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,  new int[]{color1, color2});
+        gradientDrawables.add(gradientLine);
+      }
+    }
   }
 
   public void setStrokeWidth(float strokeWidth) {
