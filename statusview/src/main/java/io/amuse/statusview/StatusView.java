@@ -35,13 +35,11 @@ public class StatusView extends View {
   private Paint paint;
   private Paint paintText;
   private Paint paintCircle;
-  private Paint paintShadow;
   private Paint bitmapPaint;
 
   private Typeface typeface;
 
   private List<StatusStep> statusSteps = new ArrayList<>();
-  private static final PorterDuffXfermode modeSrc = new PorterDuffXfermode(PorterDuff.Mode.SRC);
 
   private float strokeWidth;
   private int radius;
@@ -50,10 +48,6 @@ public class StatusView extends View {
   private int textBottomMargin;
   private int textColor;
 
-  private int shadowAlpha;
-  private boolean showShadow;
-  private int shadowColor;
-  private int shadowWidth;
   private Bitmap mBitmap;
   private Canvas mCanvas;
 
@@ -61,7 +55,6 @@ public class StatusView extends View {
   private int firstHeight;
   public int textScaleMinWidth; // min change in width before resizing text
   private boolean textScaleAutomatically; // if true, it will scale text down when downsizing during animations
-  private Rect lineBounds;
 
   public StatusView(Context context) {
     super(context);
@@ -81,18 +74,14 @@ public class StatusView extends View {
   private void init(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
-    paintShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
     paintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
     bitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     textBounds = new Rect();
-    lineBounds = new Rect();
 
     bitmapPaint.setDither(true);
     paint.setDither(true);
     paintText.setDither(true);
-    paintShadow.setDither(true);
     paintCircle.setDither(true);
-
 
     TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.StatusView, 0, 0);
     try {
@@ -103,11 +92,6 @@ public class StatusView extends View {
       textBottomMargin = a.getDimensionPixelOffset(R.styleable.StatusView_text_bottom_margin, 50);
       textColor = a.getColor(R.styleable.StatusView_text_color, Color.BLACK);
       textScaleAutomatically = a.getBoolean(R.styleable.StatusView_text_scale_automatically, true);
-
-      shadowAlpha = (int) (100 * a.getFloat(R.styleable.StatusView_shadow_alpha, 1f));
-      showShadow = a.getBoolean(R.styleable.StatusView_show_shadow, true);
-      shadowColor = a.getColor(R.styleable.StatusView_shadow_color, Color.LTGRAY);
-      shadowWidth = a.getDimensionPixelOffset(R.styleable.StatusView_shadow_width, 25);
     } finally {
       a.recycle();
     }
@@ -277,20 +261,5 @@ public class StatusView extends View {
   public void setTypeface(Typeface typeface) {
     this.typeface = typeface;
   }
-
-  public void setShadowAlpha(int shadowAlpha) {
-    this.shadowAlpha = shadowAlpha;
-  }
-
-  public void setShowShadow(boolean showShadow) {
-    this.showShadow = showShadow;
-  }
-
-  public void setShadowColor(int shadowColor) {
-    this.shadowColor = shadowColor;
-  }
-
-  public void setShadowWidth(int shadowWidth) {
-    this.shadowWidth = shadowWidth;
-  }
+  
 }
