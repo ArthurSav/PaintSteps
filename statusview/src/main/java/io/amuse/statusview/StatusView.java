@@ -5,11 +5,15 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +21,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A custom view that shows status/progress
@@ -56,6 +61,7 @@ public class StatusView extends View {
   private int firstHeight;
   public int textScaleMinWidth; // min change in width before resizing text
   private boolean textScaleAutomatically; // if true, it will scale text down when downsizing during animations
+  private Rect lineBounds;
 
   public StatusView(Context context) {
     super(context);
@@ -79,12 +85,14 @@ public class StatusView extends View {
     paintCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
     bitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     textBounds = new Rect();
+    lineBounds = new Rect();
 
     bitmapPaint.setDither(true);
     paint.setDither(true);
     paintText.setDither(true);
     paintShadow.setDither(true);
     paintCircle.setDither(true);
+
 
     TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.StatusView, 0, 0);
     try {
@@ -144,8 +152,6 @@ public class StatusView extends View {
       firstHeight = height;
     }
 
-    float shadowRadius = showShadow ? radius + shadowWidth : radius;
-
     String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
     String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
 
@@ -175,7 +181,7 @@ public class StatusView extends View {
       }
     }
 
-    float sideMarginWidth = (textWidth / 2) > shadowRadius ? textWidth : shadowWidth * 2;
+    float sideMarginWidth = (textWidth / 2) > radius? textWidth: radius * 2;
     float paddingWidth = extraPadding * 2;
 
     int steps_count = steps.size();
@@ -201,10 +207,21 @@ public class StatusView extends View {
       progressWidth += x_step;
 
       if (i < step_lines) {
-        paint.setColor(step.getColorLine());
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(strokeWidth);
-        canvas.drawLine(startFrom, y, progressWidth, y, paint);
+        if (step.isUseGradient()) {
+          int color1 = step.getColorCircle();
+          int color2 = steps.get(i+1).getColorCircle();
+          int yWidth = (int) (strokeWidth / 2);
+          GradientDrawable gradientLine = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,  new int[]{color1, color2});
+          gradientLine.setBounds((int) startFrom, y - yWidth, (int) progressWidth, y + yWidth);
+          gradientLine.setShape(GradientDrawable.RECTANGLE);
+          gradientLine.draw(canvas);
+        }
+        else {
+          paint.setColor(step.getColorLine());
+          paint.setStyle(Paint.Style.STROKE);
+          paint.setStrokeWidth(strokeWidth);
+          canvas.drawLine(startFrom, y, progressWidth, y, paint);
+        }
       }
 
       // draw circle
@@ -220,11 +237,17 @@ public class StatusView extends View {
         paintText.getTextBounds(txt, 0, txt.length(), textBounds);
 
         float textStartX = startFrom - (textBounds.width() / 2);
-        float textStartY = y - radius - textBottomMargin;
+        float textStartY = y + radius + textBottomMargin;
 
         canvas.drawText(txt, textStartX, textStartY, paintText);
       }
     }
+  }
+
+  public int getRandomColor(){
+    Random rnd = new Random();
+    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+    return color;
   }
 
   ///////////////////////////////////////////////////////////////////////////

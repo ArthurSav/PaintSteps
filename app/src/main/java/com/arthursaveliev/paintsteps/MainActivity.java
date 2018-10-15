@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
     statusView = findViewById(R.id.statusView);
     Button btn = findViewById(R.id.button);
 
-    redrawRandomSteps();
+    drawSimpleSteps();
     btn.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        redrawRandomSteps();
+        drawSimpleSteps();
       }
     });
   }
@@ -35,6 +35,17 @@ public class MainActivity extends AppCompatActivity {
   // Helpers
   ///////////////////////////////////////////////////////////////////////////
 
+  public void drawSimpleSteps(){
+    statusSteps = new ArrayList<>();
+
+    statusSteps.add(new StatusStep(Color.GREEN, Color.GREEN, "No", true));
+    statusSteps.add(new StatusStep(Color.YELLOW, Color.GRAY, "Maybe", false));
+    statusSteps.add(new StatusStep(Color.GRAY, Color.GRAY, "Yes", false));
+
+    statusView.setSteps(statusSteps);
+    statusView.invalidate();
+  }
+
   public void redrawRandomSteps() {
 
     Random rnd = new Random();
@@ -42,11 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     statusSteps = new ArrayList<>();
     for (int i = 0; i < step_count; i++) {
-      statusSteps.add(new StatusStep(Color.GREEN, getRandomColor(), "Title is " + i));
+      statusSteps.add(new StatusStep(Color.GREEN, getRandomColor(), "Title is " + i, true));
     }
 
     statusView.setSteps(statusSteps);
-    statusView.requestLayout();
     statusView.invalidate();
   }
 
