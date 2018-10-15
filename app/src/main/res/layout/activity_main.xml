@@ -21,6 +21,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:radius="6dp"
+      app:show_lines="true"
       app:extra_padding="10dp"
       app:stoke_width="2dp"
       app:text_bottom_margin="15dp"

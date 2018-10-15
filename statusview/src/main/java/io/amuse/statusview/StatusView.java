@@ -56,6 +56,10 @@ public class StatusView extends View {
   public int textScaleMinWidth; // min change in width before resizing text
   private boolean textScaleAutomatically; // if true, it will scale text down when downsizing during animations
 
+  private boolean showLines;
+  private boolean showText;
+  private int circleDistance;
+
   public StatusView(Context context) {
     super(context);
     init(context, null, 0);
@@ -92,6 +96,9 @@ public class StatusView extends View {
       textBottomMargin = a.getDimensionPixelOffset(R.styleable.StatusView_text_bottom_margin, 50);
       textColor = a.getColor(R.styleable.StatusView_text_color, Color.BLACK);
       textScaleAutomatically = a.getBoolean(R.styleable.StatusView_text_scale_automatically, true);
+      showLines = a.getBoolean(R.styleable.StatusView_show_lines, true);
+      showText = a.getBoolean(R.styleable.StatusView_show_text, true);
+      circleDistance = a.getDimensionPixelOffset(R.styleable.StatusView_circle_distance, 0);
     } finally {
       a.recycle();
     }
@@ -175,9 +182,8 @@ public class StatusView extends View {
     float x =  width - sideMarginWidth - paddingWidth;
     int y =  height / 2;
 
-    float x_step = x / step_lines;
+    float x_step = showLines? x / step_lines: 2 * radius + circleDistance;
     float progressWidth = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
-
 
     // custom text typeface
     if (typeface != null) {
@@ -190,21 +196,23 @@ public class StatusView extends View {
       float startFrom = progressWidth;
       progressWidth += x_step;
 
-      if (i < step_lines) {
-        if (step.isUseGradient()) {
-          int color1 = step.getColorCircle();
-          int color2 = steps.get(i+1).getColorCircle();
-          int yWidth = (int) (strokeWidth / 2);
-          GradientDrawable gradientLine = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,  new int[]{color1, color2});
-          gradientLine.setBounds((int) startFrom, y - yWidth, (int) progressWidth, y + yWidth);
-          gradientLine.setShape(GradientDrawable.RECTANGLE);
-          gradientLine.draw(canvas);
-        }
-        else {
-          paint.setColor(step.getColorLine());
-          paint.setStyle(Paint.Style.STROKE);
-          paint.setStrokeWidth(strokeWidth);
-          canvas.drawLine(startFrom, y, progressWidth, y, paint);
+      if (showLines) {
+        if (i < step_lines) {
+          if (step.isUseGradient()) {
+            int color1 = step.getColorCircle();
+            int color2 = steps.get(i+1).getColorCircle();
+            int yWidth = (int) (strokeWidth / 2);
+            GradientDrawable gradientLine = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,  new int[]{color1, color2});
+            gradientLine.setBounds((int) startFrom, y - yWidth, (int) progressWidth, y + yWidth);
+            gradientLine.setShape(GradientDrawable.RECTANGLE);
+            gradientLine.draw(canvas);
+          }
+          else {
+            paint.setColor(step.getColorLine());
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(strokeWidth);
+            canvas.drawLine(startFrom, y, progressWidth, y, paint);
+          }
         }
       }
 
@@ -215,23 +223,19 @@ public class StatusView extends View {
       canvas.drawCircle(startFrom, y, radius, paintCircle);
 
       // draw text
-      String txt = steps.get(i).getText();
-      if (txt != null) {
-        paintText.setColor(textColor);
-        paintText.getTextBounds(txt, 0, txt.length(), textBounds);
+      if (showText) {
+        String txt = steps.get(i).getText();
+        if (txt != null) {
+          paintText.setColor(textColor);
+          paintText.getTextBounds(txt, 0, txt.length(), textBounds);
 
-        float textStartX = startFrom - (textBounds.width() / 2);
-        float textStartY = y + radius + textBottomMargin;
+          float textStartX = startFrom - (textBounds.width() / 2);
+          float textStartY = y + radius + textBottomMargin;
 
-        canvas.drawText(txt, textStartX, textStartY, paintText);
+          canvas.drawText(txt, textStartX, textStartY, paintText);
+        }
       }
     }
-  }
-
-  public int getRandomColor(){
-    Random rnd = new Random();
-    int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    return color;
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -261,5 +265,16 @@ public class StatusView extends View {
   public void setTypeface(Typeface typeface) {
     this.typeface = typeface;
   }
-  
+
+  public void setShowLines(boolean showLines) {
+    this.showLines = showLines;
+  }
+
+  public void setShowText(boolean showText) {
+    this.showText = showText;
+  }
+
+  public void setCircleDistance(@DimenRes int circleDistance) {
+    this.circleDistance = getResources().getDimensionPixelOffset(circleDistance);
+  }
 }

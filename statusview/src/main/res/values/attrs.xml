@@ -11,6 +11,10 @@
   <attr name="shadow_color" format="color" />
   <attr name="shadow_width" format="dimension" />
   <attr name="text_scale_automatically" format="boolean" />
+  <attr name="show_lines" format="boolean" />
+  <attr name="show_text" format="boolean" />
+  <attr name="circle_distance" format="dimension"/>
+
   <declare-styleable name="StatusView">
     <attr name="stoke_width" />
     <attr name="radius" />
@@ -25,5 +29,9 @@
     <attr name="show_shadow" />
     <attr name="shadow_color" />
     <attr name="shadow_width" />
+
+    <attr name="show_lines" />
+    <attr name="show_text" />
+    <attr name="circle_distance"/>
   </declare-styleable>
 </resources>
