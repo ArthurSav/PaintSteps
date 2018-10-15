@@ -188,31 +188,6 @@ public class StatusView extends View {
     float x_step = x / step_lines;
     float progressWidth = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
 
-    //draw shadows
-    if (showShadow) {
-      float progressWidthShadow = 0.0f + (sideMarginWidth / 2) + (paddingWidth / 2);
-      for (int i = 0; i < steps_count; i++) {
-
-        float startFrom = progressWidthShadow;
-        progressWidthShadow += x_step;
-
-        // circle
-        paintShadow.setColor(shadowColor);
-        paintShadow.setStyle(Paint.Style.FILL_AND_STROKE);
-        paintShadow.setStrokeWidth(shadowWidth);
-        paintShadow.setXfermode(modeSrc);
-        paintShadow.setAlpha(shadowAlpha);
-        canvas.drawCircle(startFrom, y, radius, paintShadow);
-
-        if (i <= step_lines) {
-
-          //draw shadow line
-          paintShadow.setStyle(Paint.Style.STROKE);
-          paintShadow.setStrokeWidth(strokeWidth + shadowWidth);
-          canvas.drawLine(startFrom, y, progressWidth, y, paintShadow);
-        }
-      }
-    }
 
     // custom text typeface
     if (typeface != null) {

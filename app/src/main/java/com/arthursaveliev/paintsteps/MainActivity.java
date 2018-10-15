@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
   // Helpers
   ///////////////////////////////////////////////////////////////////////////
 
-  private boolean isTextVisible;
-
   public void redrawRandomSteps() {
 
     Random rnd = new Random();
