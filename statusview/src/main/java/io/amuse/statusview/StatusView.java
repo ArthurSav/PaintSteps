@@ -143,32 +143,35 @@ public class StatusView extends View {
       firstHeight = height;
     }
 
-    String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
-    String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
-
-    // configure text bounds
     float textWidth = 0;
-    float updatedTextSize = textSize;
 
-    // When the view is scaling down the text will scale down as well. Used for scene transitions in material design
-    if (textScaleAutomatically) {
-      textScaleMinWidth = (firstWidth / 4) * 3;
-      if (width < textScaleMinWidth) {
-        updatedTextSize = (width * textSize) / firstWidth;
-        if (updatedTextSize < 5) updatedTextSize = 0;
+    if (showText) {
+      String text1 = steps.size() > 0 ? steps.get(0).getText() : null;
+      String text2 = steps.size() - 1 > 0 ? steps.get(steps.size() - 1).getText() : null;
+
+      // configure text bounds
+      float updatedTextSize = textSize;
+
+      // When the view is scaling down the text will scale down as well. Used for scene transitions in material design
+      if (textScaleAutomatically) {
+        textScaleMinWidth = (firstWidth / 4) * 3;
+        if (width < textScaleMinWidth) {
+          updatedTextSize = (width * textSize) / firstWidth;
+          if (updatedTextSize < 5) updatedTextSize = 0;
+        }
+        else updatedTextSize = textSize;
       }
-      else updatedTextSize = textSize;
-    }
-    paintText.setTextSize(updatedTextSize);
+      paintText.setTextSize(updatedTextSize);
 
-    if (text1 != null) {
-      paintText.getTextBounds(text1, 0, text1.length(), textBounds);
-      textWidth = textBounds.width();
-    }
-    if (text2 != null) {
-      paintText.getTextBounds(text2, 0, text2.length(), textBounds);
-      if (textBounds.width() > textWidth) {
+      if (text1 != null) {
+        paintText.getTextBounds(text1, 0, text1.length(), textBounds);
         textWidth = textBounds.width();
+      }
+      if (text2 != null) {
+        paintText.getTextBounds(text2, 0, text2.length(), textBounds);
+        if (textBounds.width() > textWidth) {
+          textWidth = textBounds.width();
+        }
       }
     }
 
